@@ -1,10 +1,10 @@
-# 🫀 Interpretable Deep Learning for Early Heart Disease Risk Assessment
+#  Interpretable Deep Learning for Early Heart Disease Risk Assessment
 
 > A deep learning framework combining **Artificial Neural Networks (ANN)** with **Explainable AI (XAI)** techniques — SHAP and Integrated Gradients — to predict and explain heart disease risk with clinical transparency.
 
 ---
 
-## 📌 Project Overview
+##  Project Overview
 
 Cardiovascular disease is the **#1 cause of death globally** (WHO, 2023). Early and accurate risk prediction saves lives — but most deep learning models are "black boxes" that clinicians can't trust or act on.
 
@@ -12,7 +12,7 @@ This project solves that by building a high-accuracy ANN that also **explains it
 
 ---
 
-## 🎯 Objectives
+##  Objectives
 
 - Train a deep ANN on the UCI Cleveland Heart Disease Dataset
 - Benchmark it against traditional ML models (Logistic Regression, Random Forest, Gradient Boosting, SVM)
@@ -22,7 +22,7 @@ This project solves that by building a high-accuracy ANN that also **explains it
 
 ---
 
-## 🗂️ Project Structure
+##  Project Structure
 
 ```
 heart_disease_xai/
@@ -49,7 +49,7 @@ heart_disease_xai/
 
 ---
 
-## 🧠 ANN Architecture
+##  ANN Architecture
 
 ```
 Input (13 features)
@@ -68,7 +68,7 @@ Input (13 features)
 
 ---
 
-## 📊 Dataset
+##  Dataset
 
 **UCI Cleveland Heart Disease Dataset**
 - 303 patients · 13 clinical features · Binary target (0 = No disease, 1 = Disease)
@@ -92,7 +92,7 @@ Input (13 features)
 
 ---
 
-## ⚙️ Setup & Installation
+##  Setup & Installation
 
 ```bash
 # Clone the repo
@@ -107,7 +107,7 @@ pip install -r requirements.txt
 
 ---
 
-## 🚀 Usage
+##  Usage
 
 **Prepare the dataset** (one-time setup after downloading from UCI):
 
@@ -138,7 +138,7 @@ python main.py --data heart.csv --epochs 300 --lr 0.001 --shap-samples 50
 
 ---
 
-## 📈 Results
+##  Results
 
 | Model | Accuracy | ROC-AUC | F1-Score |
 |-------|----------|---------|----------|
@@ -150,7 +150,7 @@ python main.py --data heart.csv --epochs 300 --lr 0.001 --shap-samples 50
 
 ---
 
-## 🔍 Explainability
+##  Explainability
 
 ### SHAP (SHapley Additive exPlanations)
 - Game-theoretic approach to feature attribution
@@ -174,7 +174,7 @@ python main.py --data heart.csv --epochs 300 --lr 0.001 --shap-samples 50
 
 ---
 
-## 🖼️ Output Plots
+##  Output Plots
 
 | Plot | Description |
 |------|-------------|
@@ -186,7 +186,7 @@ python main.py --data heart.csv --epochs 300 --lr 0.001 --shap-samples 50
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-red?logo=pytorch)
@@ -196,7 +196,7 @@ python main.py --data heart.csv --epochs 300 --lr 0.001 --shap-samples 50
 
 ---
 
-## 📚 References
+##  References
 
 - Lundberg & Lee (2017). *A Unified Approach to Interpreting Model Predictions.* NeurIPS.
 - Sundararajan et al. (2017). *Axiomatic Attribution for Deep Networks.* ICML.
@@ -205,7 +205,7 @@ python main.py --data heart.csv --epochs 300 --lr 0.001 --shap-samples 50
 
 ---
 
-## 👤 Author
+##  Author
 
 **Pranav Mathur**  
 GitHub: [@pranav12mathur](https://github.com/pranav12mathur)

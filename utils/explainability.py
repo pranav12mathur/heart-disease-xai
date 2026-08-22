@@ -4,6 +4,9 @@ Explainable AI Module
 - Integrated Gradients for neural network attribution
 """
 
+import matplotlib
+matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import matplotlib.pyplot as plt

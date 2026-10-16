@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Heart Disease XAI — Results Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --dark:    #0D1B2A;
+    --navy:    #1B3A5C;
+    --teal:    #028090;
+    --mint:    #02C39A;
+    --light:   #F0F4F8;
+    --white:   #FFFFFF;
+    --gray:    #8899AA;
+    --text:    #1A2B3C;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--light);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--dark);
+    padding: 60px 40px 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: var(--teal);
+    opacity: 0.08;
+    top: -120px; left: -80px;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: var(--mint);
+    opacity: 0.06;
+    bottom: -100px; right: -60px;
+  }
+  .hero-tag {
+    display: inline-block;
+    background: var(--teal);
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 48px);
+    color: var(--white);
+    line-height: 1.2;
+    max-width: 800px;
+    margin: 0 auto 12px;
+  }
+  .hero h1 span { color: var(--mint); }
+  .hero p {
+    color: var(--gray);
+    font-size: 15px;
+    margin-bottom: 36px;
+  }
+
+  /* ── STATS BAR ── */
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+  }
+  .stat-card {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 18px 28px;
+    text-align: center;
+    min-width: 130px;
+  }
+  .stat-card .val {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--mint);
+    display: block;
+  }
+  .stat-card .lbl {
+    font-size: 11px;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  /* ── MAIN ── */
+  main { max-width: 1100px; margin: 0 auto; padding: 50px 24px 80px; }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--dark);
+    margin-bottom: 32px;
+  }
+
+  /* ── RESULT CARDS ── */
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+    gap: 28px;
+  }
+
+  .result-card {
+    background: var(--white);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .result-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  }
+
+  .card-img-wrap {
+    width: 100%;
+    background: #e8edf2;
+    cursor: zoom-in;
+    overflow: hidden;
+  }
+  .card-img-wrap img {
+    width: 100%;
+    display: block;
+    transition: transform 0.3s;
+  }
+  .card-img-wrap:hover img { transform: scale(1.02); }
+
+  .card-body { padding: 22px 24px 24px; }
+
+  .card-num {
+    display: inline-block;
+    background: var(--teal);
+    color: var(--white);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  .card-body h3 {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .card-body p {
+    font-size: 13.5px;
+    color: #445566;
+    line-height: 1.65;
+  }
+  .card-filename {
+    margin-top: 14px;
+    font-size: 11px;
+    color: var(--gray);
+    font-family: monospace;
+    background: var(--light);
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 6px;
+  }
+
+  /* ── LIGHTBOX ── */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.88);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img {
+    max-width: 90vw;
+    max-height: 88vh;
+    border-radius: 10px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .lightbox-close {
+    position: fixed;
+    top: 20px; right: 28px;
+    font-size: 32px;
+    color: white;
+    cursor: pointer;
+    line-height: 1;
+    opacity: 0.7;
+  }
+  .lightbox-close:hover { opacity: 1; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 28px;
+    font-size: 12px;
+    color: var(--gray);
+    border-top: 1px solid #dde4ec;
+  }
+  footer a { color: var(--teal); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">Summer Internship Project · 2026</div>
+  <h1>Interpretable Deep Learning for<br><span>Early Heart Disease Risk Assessment</span></h1>
+  <p>Pranav Mathur · 23CS002727 · Sir Padampat Singhania University · B.Tech CSE</p>
+  <div class="stats">
+    <div class="stat-card"><span class="val">84.78%</span><div class="lbl">ANN Accuracy</div></div>
+    <div class="stat-card"><span class="val">89.85%</span><div class="lbl">ROC-AUC</div></div>
+    <div class="stat-card"><span class="val">86.14%</span><div class="lbl">F1-Score</div></div>
+    <div class="stat-card"><span class="val">920</span><div class="lbl">Patients</div></div>
+    <div class="stat-card"><span class="val">13</span><div class="lbl">Features</div></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+  <div class="section-label">XAI · Deep Learning · Results</div>
+  <div class="section-title">Model Results & Explainability Visualizations</div>
+
+  <div class="results-grid">
+
+    <!-- 1 -->
+    <div class="result-card">
+      <div class="card-img-wrap" onclick="openLight('training_history.png')">
+        <img src="training_history.png" alt="Training History" loading="lazy"/>
+      </div>
+      <div class="card-body">
+        <span class="card-num">01</span>
+        <h3>ANN Training History</h3>
+        <p>Shows how the model's loss decreased and accuracy improved over training epochs. The tight alignment between training and validation curves confirms the model generalizes well and does not overfit the data.</p>
+        <span class="card-filename">training_history.png</span>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="result-card">
+      <div class="card-img-wrap" onclick="openLight('model_comparison.png')">
+        <img src="model_comparison.png" alt="Model Comparison" loading="lazy"/>
+      </div>
+      <div class="card-body">
+        <span class="card-num">02</span>
+        <h3>Model Performance Comparison</h3>
+        <p>Compares the ANN against four traditional ML baselines — Logistic Regression, Random Forest, Gradient Boosting, and SVM — across Accuracy, ROC-AUC, and F1-Score. The ANN achieves competitive performance with an ROC-AUC of 89.85%.</p>
+        <span class="card-filename">model_comparison.png</span>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="result-card">
+      <div class="card-img-wrap" onclick="openLight('ig_attribution_sample.png')">
+        <img src="ig_attribution_sample.png" alt="IG Attribution Sample" loading="lazy"/>
+      </div>
+      <div class="card-body">
+        <span class="card-num">03</span>
+        <h3>Integrated Gradients — Single Patient</h3>
+        <p>Shows which features increased or decreased the risk score for one high-risk patient. Red bars push the prediction towards disease, blue bars push it away — giving a clinician a clear, patient-level explanation of why the model flagged this individual.</p>
+        <span class="card-filename">ig_attribution_sample.png</span>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="result-card">
+      <div class="card-img-wrap" onclick="openLight('ig_global_importance.png')">
+        <img src="ig_global_importance.png" alt="IG Global Importance" loading="lazy"/>
+      </div>
+      <div class="card-body">
+        <span class="card-num">04</span>
+        <h3>Integrated Gradients — Global Importance</h3>
+        <p>Displays the average absolute IG attribution across all test patients, revealing which features the ANN relies on most overall. Chest pain type (cp), exercise angina (exang), and ST depression (oldpeak) emerge as the strongest global predictors.</p>
+        <span class="card-filename">ig_global_importance.png</span>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="result-card">
+      <div class="card-img-wrap" onclick="openLight('shap_global_importance.png')">
+        <img src="shap_global_importance.png" alt="SHAP Global Importance" loading="lazy"/>
+      </div>
+      <div class="card-body">
+        <span class="card-num">05</span>
+        <h3>SHAP — Global Feature Importance</h3>
+        <p>Mean absolute SHAP values across 30 test patients, showing population-level feature importance using game-theoretic attribution. The rankings closely agree with Integrated Gradients, providing cross-validated clinical evidence for the model's learned patterns.</p>
+        <span class="card-filename">shap_global_importance.png</span>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="result-card">
+      <div class="card-img-wrap" onclick="openLight('shap_local_sample.png')">
+        <img src="shap_local_sample.png" alt="SHAP Local Sample" loading="lazy"/>
+      </div>
+      <div class="card-body">
+        <span class="card-num">06</span>
+        <h3>SHAP — Single Patient Local Explanation</h3>
+        <p>SHAP waterfall for one high-risk patient showing the exact contribution of each feature to that specific prediction. A doctor can use this to understand precisely why the model predicted heart disease for this individual and decide whether to investigate further.</p>
+        <span class="card-filename">shap_local_sample.png</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLight()">
+  <div class="lightbox-close" onclick="closeLight()">✕</div>
+  <img id="lightbox-img" src="" alt=""/>
+</div>
+
+<footer>
+  Interpretable Deep Learning for Heart Disease Risk Assessment &nbsp;·&nbsp;
+  Pranav Mathur &nbsp;·&nbsp;
+  <a href="https://github.com/pranav12mathur/heart-disease-xai" target="_blank">github.com/pranav12mathur/heart-disease-xai</a>
+</footer>
+
+<script>
+  function openLight(src) {
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeLight() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.getElementById('lightbox-img').src = '';
+  }
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLight(); });
+</script>
+</body>
+</html>
